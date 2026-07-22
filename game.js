@@ -36,6 +36,8 @@ const canvas = document.getElementById('board');
 const ctx = canvas.getContext('2d');
 const nextCanvas = document.getElementById('next-canvas');
 const nextCtx = nextCanvas.getContext('2d');
+const holdCanvas = document.getElementById('hold-canvas');
+const holdCtx = holdCanvas.getContext('2d');
 const scoreEl = document.getElementById('score');
 const linesEl = document.getElementById('lines');
 const levelEl = document.getElementById('level');
@@ -47,16 +49,19 @@ const themeToggleBtn = document.getElementById('theme-toggle');
 const themeIcon = document.getElementById('theme-icon');
 const themeLabel = document.getElementById('theme-label');
 
-let board, current, next, score, lines, level, paused, gameOver, lastTime, dropAccum, dropInterval, animId;
+let board, current, next, hold, canHold, score, lines, level, paused, gameOver, lastTime, dropAccum, dropInterval, animId;
 
 function createBoard() {
   return Array.from({ length: ROWS }, () => new Array(COLS).fill(0));
 }
 
-function randomPiece() {
-  const type = Math.floor(Math.random() * 8) + 1;
+function makePiece(type) {
   const shape = PIECES[type].map(row => [...row]);
   return { type, shape, x: Math.floor(COLS / 2) - Math.floor(shape[0].length / 2), y: 0 };
+}
+
+function randomPiece() {
+  return makePiece(Math.floor(Math.random() * 8) + 1);
 }
 
 function collide(shape, ox, oy) {
@@ -151,10 +156,28 @@ function lockPiece() {
 function spawn() {
   current = next;
   next = randomPiece();
+  canHold = true;
   if (collide(current.shape, current.x, current.y)) {
     endGame();
   }
   drawNext();
+  drawHold();
+}
+
+function holdPiece() {
+  if (paused || gameOver || !canHold) return;
+  const currentType = current.type;
+  if (hold === null) {
+    hold = currentType;
+    spawn();
+  } else {
+    const swapType = hold;
+    hold = currentType;
+    current = makePiece(swapType);
+    if (collide(current.shape, current.x, current.y)) endGame();
+  }
+  canHold = false;
+  drawHold();
 }
 
 function updateHUD() {
@@ -225,6 +248,19 @@ function drawNext() {
       drawBlock(nextCtx, offX + c, offY + r, shape[r][c], NB);
 }
 
+function drawHold() {
+  const NB = 30;
+  holdCtx.clearRect(0, 0, holdCanvas.width, holdCanvas.height);
+  holdCanvas.classList.toggle('locked', !canHold);
+  if (hold === null) return;
+  const shape = PIECES[hold];
+  const offX = Math.floor((4 - shape[0].length) / 2);
+  const offY = Math.floor((4 - shape.length) / 2);
+  for (let r = 0; r < shape.length; r++)
+    for (let c = 0; c < shape[r].length; c++)
+      drawBlock(holdCtx, offX + c, offY + r, shape[r][c], NB);
+}
+
 function endGame() {
   gameOver = true;
   cancelAnimationFrame(animId);
@@ -265,6 +301,8 @@ function loop(ts) {
 
 function init() {
   board = createBoard();
+  hold = null;
+  canHold = true;
   score = 0;
   lines = 0;
   level = 1;
@@ -276,6 +314,7 @@ function init() {
   next = randomPiece();
   spawn();
   updateHUD();
+  drawHold();
   overlay.classList.add('hidden');
   cancelAnimationFrame(animId);
   animId = requestAnimationFrame(loop);
@@ -302,6 +341,11 @@ document.addEventListener('keydown', e => {
       e.preventDefault();
       hardDrop();
       break;
+    case 'KeyC':
+    case 'ShiftLeft':
+    case 'ShiftRight':
+      holdPiece();
+      break;
   }
   updateHUD();
 });
@@ -325,6 +369,7 @@ themeToggleBtn.addEventListener('click', () => {
   localStorage.setItem(THEME_KEY, isLight ? 'light' : 'dark');
   draw();
   drawNext();
+  drawHold();
 });
 
 initTheme();

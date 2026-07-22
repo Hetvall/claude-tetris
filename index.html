@@ -1,11 +1,13 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Tetris</title>
   <link rel="stylesheet" href="style.css" />
 </head>
+
 <body>
   <div class="wrapper">
     <h1 class="game-title">TETRIS</h1>
@@ -34,21 +36,26 @@
         </div>
 
         <div class="panel-section">
+          <span class="label">HOLD</span>
+          <canvas id="hold-canvas" width="120" height="120"></canvas>
+        </div>
+
+        <div class="panel-section">
           <span class="label">NEXT</span>
           <canvas id="next-canvas" width="120" height="120"></canvas>
         </div>
-
-        <div class="panel-section controls">
-          <span class="label">CONTROLS</span>
-          <ul>
-            <li><kbd>←</kbd><kbd>→</kbd> mover</li>
-            <li><kbd>↑</kbd> rotar</li>
-            <li><kbd>↓</kbd> bajar</li>
-            <li><kbd>Space</kbd> caída</li>
-            <li><kbd>P</kbd> pausa</li>
-          </ul>
-        </div>
       </aside>
+      <div class="panel-section controls">
+        <span class="label">CONTROLS</span>
+        <ul>
+          <li><kbd>←</kbd><kbd>→</kbd> mover</li>
+          <li><kbd>↑</kbd> rotar</li>
+          <li><kbd>↓</kbd> bajar</li>
+          <li><kbd>Space</kbd> caída</li>
+          <li><kbd>C</kbd> guardar</li>
+          <li><kbd>P</kbd> pausa</li>
+        </ul>
+      </div>
     </div>
 
     <div id="overlay" class="overlay hidden">
@@ -62,4 +69,5 @@
 
   <script src="game.js"></script>
 </body>
+
 </html>
