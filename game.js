@@ -28,6 +28,8 @@ const PIECES = [
 
 const LINE_SCORES = [0, 100, 300, 500, 800];
 
+const THEME_KEY = 'tetris-theme';
+
 const canvas = document.getElementById('board');
 const ctx = canvas.getContext('2d');
 const nextCanvas = document.getElementById('next-canvas');
@@ -39,6 +41,9 @@ const overlay = document.getElementById('overlay');
 const overlayTitle = document.getElementById('overlay-title');
 const overlayScore = document.getElementById('overlay-score');
 const restartBtn = document.getElementById('restart-btn');
+const themeToggleBtn = document.getElementById('theme-toggle');
+const themeIcon = document.getElementById('theme-icon');
+const themeLabel = document.getElementById('theme-label');
 
 let board, current, next, score, lines, level, paused, gameOver, lastTime, dropAccum, dropInterval, animId;
 
@@ -169,7 +174,7 @@ function drawBlock(context, x, y, colorIndex, size, alpha) {
 }
 
 function drawGrid() {
-  ctx.strokeStyle = '#22222e';
+  ctx.strokeStyle = getComputedStyle(document.body).getPropertyValue('--grid-color').trim();
   ctx.lineWidth = 0.5;
   for (let c = 1; c < COLS; c++) {
     ctx.beginPath();
@@ -301,4 +306,24 @@ document.addEventListener('keydown', e => {
 
 restartBtn.addEventListener('click', init);
 
+function setThemeUI(isLight) {
+  document.body.classList.toggle('light', isLight);
+  themeIcon.textContent = isLight ? '☀️' : '🌙';
+  themeLabel.textContent = isLight ? 'LIGHT' : 'DARK';
+  themeToggleBtn.setAttribute('aria-pressed', String(isLight));
+}
+
+function initTheme() {
+  setThemeUI(localStorage.getItem(THEME_KEY) === 'light');
+}
+
+themeToggleBtn.addEventListener('click', () => {
+  const isLight = !document.body.classList.contains('light');
+  setThemeUI(isLight);
+  localStorage.setItem(THEME_KEY, isLight ? 'light' : 'dark');
+  draw();
+  drawNext();
+});
+
+initTheme();
 init();
