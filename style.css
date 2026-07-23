@@ -160,6 +160,43 @@ body {
   line-height: 1;
 }
 
+/* ---- Selector de skin ---- */
+.skin-selector {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6px;
+}
+
+.skin-btn {
+  background: var(--kbd-bg);
+  border: 1px solid var(--board-border);
+  border-radius: 6px;
+  padding: 6px 4px;
+  color: var(--fg);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s, border-color 0.15s;
+}
+
+.skin-btn:hover {
+  border-color: var(--value-color);
+}
+
+.skin-btn.active {
+  background: var(--value-color);
+  color: var(--btn-color, #0f0f17);
+  border-color: var(--value-color);
+}
+
+/* ---- Skin: Neon (fondo de tablero negro) ---- */
+body.skin-neon #board,
+body.skin-neon #next-canvas,
+body.skin-neon #hold-canvas {
+  background: #000000;
+}
+
 /* ---- Controles ---- */
 .controls ul {
   list-style: none;
