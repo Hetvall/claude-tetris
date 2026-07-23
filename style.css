@@ -211,6 +211,10 @@ kbd {
   align-items: center;
 }
 
+.overlay-box.hidden {
+  display: none;
+}
+
 #overlay-title {
   font-size: 28px;
   font-weight: 800;
@@ -240,4 +244,112 @@ kbd {
 
 #restart-btn:hover {
   background: var(--btn-hover);
+}
+
+/* ---- Menú de pausa ---- */
+#pause-title {
+  font-size: 24px;
+  font-weight: 800;
+  letter-spacing: 4px;
+  color: var(--value-color);
+}
+
+.pause-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: 200px;
+}
+
+.pause-actions button {
+  background: var(--btn-bg);
+  color: var(--btn-color);
+  border: none;
+  border-radius: 6px;
+  padding: 10px 20px;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  letter-spacing: 1px;
+  transition: background 0.15s;
+}
+
+.pause-actions button:hover {
+  background: var(--btn-hover);
+}
+
+#controls-toggle-btn {
+  background: var(--kbd-bg);
+  color: var(--fg);
+  border: 1px solid var(--board-border);
+}
+
+#controls-toggle-btn:hover {
+  border-color: var(--value-color);
+}
+
+.pause-level {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+}
+
+.level-stepper {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.level-stepper .value {
+  font-size: 20px;
+  min-width: 24px;
+  text-align: center;
+}
+
+.level-stepper button {
+  width: 30px;
+  height: 30px;
+  border-radius: 6px;
+  border: 1px solid var(--board-border);
+  background: var(--kbd-bg);
+  color: var(--fg);
+  font-size: 16px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s, opacity 0.15s;
+}
+
+.level-stepper button:hover:not(:disabled) {
+  border-color: var(--value-color);
+}
+
+.level-stepper button:disabled {
+  opacity: 0.35;
+  cursor: default;
+}
+
+.pause-controls {
+  border-top: 1px solid var(--board-border);
+  padding-top: 10px;
+  width: 200px;
+}
+
+.pause-controls.hidden {
+  display: none;
+}
+
+.pause-controls ul {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.pause-controls li {
+  font-size: 12px;
+  color: var(--controls-color);
+  display: flex;
+  align-items: center;
+  gap: 4px;
 }
