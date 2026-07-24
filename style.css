@@ -222,6 +222,98 @@ kbd {
   color: var(--kbd-color);
 }
 
+/* ---- Records ---- */
+.records {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  width: 200px;
+  text-align: left;
+}
+
+.records.hidden {
+  display: none;
+}
+
+.records-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.reset-records-btn {
+  background: transparent;
+  border: 1px solid var(--board-border);
+  border-radius: 4px;
+  color: var(--controls-color);
+  font-size: 12px;
+  line-height: 1;
+  padding: 3px 6px;
+  cursor: pointer;
+  transition: border-color 0.15s, color 0.15s;
+}
+
+.reset-records-btn:hover {
+  border-color: var(--value-color);
+  color: var(--value-color);
+}
+
+.records-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.record-item,
+.record-empty {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+  color: var(--controls-color);
+}
+
+.record-rank {
+  width: 14px;
+  color: var(--label-color);
+  font-weight: 700;
+}
+
+.record-name {
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.record-score {
+  font-family: 'Courier New', Courier, monospace;
+  font-weight: 700;
+  color: var(--value-color);
+}
+
+.record-item.record-highlight {
+  color: var(--overlay-title);
+}
+
+.record-item.record-highlight .record-score {
+  color: var(--overlay-title);
+}
+
+.records-extra {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  font-size: 10px;
+  color: var(--controls-color);
+  margin-top: 4px;
+}
+
+.records-extra strong {
+  color: var(--value-color);
+}
+
 /* ---- Overlay ---- */
 .overlay {
   position: absolute;
@@ -275,5 +367,56 @@ kbd {
 }
 
 #restart-btn:hover {
+  background: var(--btn-hover);
+}
+
+.overlay-newrecord {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  align-items: center;
+}
+
+.overlay-newrecord.hidden {
+  display: none;
+}
+
+.new-record-label {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--overlay-title);
+  letter-spacing: 0.5px;
+}
+
+#player-name-input {
+  background: var(--kbd-bg);
+  border: 1px solid var(--board-border);
+  border-radius: 6px;
+  padding: 8px 10px;
+  color: var(--fg);
+  font-size: 13px;
+  text-align: center;
+  width: 160px;
+}
+
+#player-name-input:focus {
+  outline: none;
+  border-color: var(--value-color);
+}
+
+#save-score-btn {
+  background: var(--btn-bg);
+  color: var(--btn-color);
+  border: none;
+  border-radius: 6px;
+  padding: 8px 24px;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  letter-spacing: 1px;
+  transition: background 0.15s;
+}
+
+#save-score-btn:hover {
   background: var(--btn-hover);
 }
