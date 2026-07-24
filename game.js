@@ -83,7 +83,21 @@ const overlayRecords = document.getElementById('overlay-records');
 const playerNameInput = document.getElementById('player-name-input');
 const saveScoreBtn = document.getElementById('save-score-btn');
 
+const pauseOverlay = document.getElementById('pause-overlay');
+const pauseMainView = document.getElementById('pause-main');
+const pauseControlsView = document.getElementById('pause-controls');
+const resumeBtn = document.getElementById('resume-btn');
+const pauseRestartBtn = document.getElementById('pause-restart-btn');
+const showControlsBtn = document.getElementById('show-controls-btn');
+const backFromControlsBtn = document.getElementById('back-from-controls-btn');
+const startLevelValue = document.getElementById('start-level-value');
+const startLevelDecBtn = document.getElementById('start-level-dec');
+const startLevelIncBtn = document.getElementById('start-level-inc');
+
+const MAX_START_LEVEL = 15;
+
 let board, current, next, hold, canHold, score, lines, level, paused, gameOver, lastTime, dropAccum, dropInterval, animId, combo, runMaxCombo;
+let startLevel = 1;
 
 function createBoard() {
   return Array.from({ length: ROWS }, () => new Array(COLS).fill(0));
@@ -469,16 +483,44 @@ function togglePause() {
   if (gameOver) return;
   paused = !paused;
   if (!paused) {
+    hidePauseMenu();
     lastTime = performance.now();
     loop(lastTime);
   } else {
     cancelAnimationFrame(animId);
-    overlayTitle.textContent = 'PAUSA';
-    overlayScore.textContent = '';
-    overlayNewRecord.classList.add('hidden');
-    overlayRecords.classList.add('hidden');
-    overlay.classList.remove('hidden');
+    showPauseMenu();
   }
+}
+
+function showPauseMenu() {
+  showPauseMainView();
+  updateStartLevelUI();
+  pauseOverlay.classList.remove('hidden');
+}
+
+function hidePauseMenu() {
+  pauseOverlay.classList.add('hidden');
+}
+
+function showPauseMainView() {
+  pauseMainView.classList.remove('hidden');
+  pauseControlsView.classList.add('hidden');
+}
+
+function showPauseControlsView() {
+  pauseMainView.classList.add('hidden');
+  pauseControlsView.classList.remove('hidden');
+}
+
+function updateStartLevelUI() {
+  startLevelValue.textContent = String(startLevel);
+  startLevelDecBtn.disabled = startLevel <= 1;
+  startLevelIncBtn.disabled = startLevel >= MAX_START_LEVEL;
+}
+
+function changeStartLevel(delta) {
+  startLevel = Math.min(MAX_START_LEVEL, Math.max(1, startLevel + delta));
+  updateStartLevelUI();
 }
 
 function loop(ts) {
@@ -503,10 +545,10 @@ function init() {
   canHold = true;
   score = 0;
   lines = 0;
-  level = 1;
+  level = startLevel;
   paused = false;
   gameOver = false;
-  dropInterval = 1000;
+  dropInterval = Math.max(100, 1000 - (level - 1) * 90);
   dropAccum = 0;
   combo = -1;
   runMaxCombo = 0;
@@ -518,13 +560,14 @@ function init() {
   overlay.classList.add('hidden');
   overlayNewRecord.classList.add('hidden');
   overlayRecords.classList.add('hidden');
+  hidePauseMenu();
   cancelAnimationFrame(animId);
   animId = requestAnimationFrame(loop);
 }
 
 document.addEventListener('keydown', e => {
   if (e.target.tagName === 'INPUT') return;
-  if (e.code === 'KeyP') { togglePause(); return; }
+  if (e.code === 'KeyP' || e.code === 'Escape') { togglePause(); return; }
   if (paused || gameOver) return;
   switch (e.code) {
     case 'ArrowLeft':
@@ -559,6 +602,13 @@ saveScoreBtn.addEventListener('click', saveCurrentScore);
 playerNameInput.addEventListener('keydown', e => {
   if (e.code === 'Enter') saveCurrentScore();
 });
+
+resumeBtn.addEventListener('click', togglePause);
+pauseRestartBtn.addEventListener('click', init);
+showControlsBtn.addEventListener('click', showPauseControlsView);
+backFromControlsBtn.addEventListener('click', showPauseMainView);
+startLevelDecBtn.addEventListener('click', () => changeStartLevel(-1));
+startLevelIncBtn.addEventListener('click', () => changeStartLevel(1));
 
 function setThemeUI(isLight) {
   document.body.classList.toggle('light', isLight);
@@ -596,6 +646,7 @@ function initSkin() {
 
 skinSelect.addEventListener('change', () => setSkin(skinSelect.value));
 
+updateStartLevelUI();
 initTheme();
 init();
 initSkin();
